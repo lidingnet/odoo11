@@ -38,9 +38,9 @@ class PurchaseTrackLine(models.Model):
     remarks = fields.Char(string="备注")
     editable = fields.Boolean(string="Editable", default=True, readonly= True)
 
-    @api.one
-    def write(self, vals):
-        return super(PurchaseTrackLine,self).write(vals)
+    # @api.one
+    # def write(self, vals):
+    #     return super(PurchaseTrackLine,self).write(vals)
 
     # @api.multi
     def create(self, vals):
@@ -69,7 +69,7 @@ class PurchaseTrackQc(models.Model):
     @api.multi
     def create(self, vals):
         print('将要插入验货记录。。。')
-        if bool(vals['qc_method']) & bool(vals['qc_clerk'].strip()) & bool(vals['qc_date']) & bool(vals['qc_pass']):
+        if bool(vals['qc_method']) & bool(vals['qc_clerk']) & bool(vals['qc_date']) & bool(vals['qc_pass']):
 
             return super(PurchaseTrackQc, self).create(vals)
         else:

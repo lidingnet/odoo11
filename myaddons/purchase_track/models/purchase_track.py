@@ -52,16 +52,14 @@ class PurchaseTrack(models.Model):
     @api.multi
     # 保存时,跟单中的editable写为False
     def write(self, vals):
-        result = super(PurchaseTrack, self).write(vals)
-        self.purchase_track_line_ids.write({'editable': False})
-        # 保存时,如果已经有填写日期，明细条目的editable写为False
-        for item in self.purchase_track_line_ids:
-            if item['confirm_date'] != False:
-                item['editable'] = False
-            else:
-                item['editable'] = True
-        # self.purchase_track_qc_ids.write({'editable': False})
-        return result
+        # 保存时,如果有填写日期，明细条目的editable写为False
+        for item in vals['purchase_track_line_ids']:
+            # item[2]为disk，表示修改过的ids条目，没有修改是False
+            # 如果日期有值，本条目保存后，不能编辑
+            if item[2] != False and ('confirm_date' in item[2]) :
+                item[2]['editable'] = False
+        return super(PurchaseTrack, self).write(vals)
+
 
     @api.depends()
     # 根据跟单事项填写时间线
